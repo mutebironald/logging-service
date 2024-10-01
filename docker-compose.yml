@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_HOST_AUTH_METHOD: trust  # Allow all connections without a password for local dev, remove for prod
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: logging_service
+    env_file:
+      - .env.docker
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+volumes:
+  postgres_data:

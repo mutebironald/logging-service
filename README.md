@@ -7,6 +7,7 @@ This project provides a logging service with user authentication, log storage, a
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
+- [Docker Setup](#docker-setup)
 - [Running the Application](#running-the-application)
 - [Testing the Endpoints](#testing-the-endpoints)
   - [1. User Registration](#1-user-registration)
@@ -39,7 +40,20 @@ npm install
 
 - update the .env with your Database configurations
 
+## Docker Setup
+- Ensure Docker is Installed: Make sure you have Docker installed on your machine.
+- Build the Docker Image: In the root directory of your project, run:
+```bash
+docker-compose up --build
+```
+- Access the Application: After building the image, the application will be running on http://localhost:3000
+- stopping the Application: To stop the running containers, press CTRL + C or run:
+```bash
+docker-compose down
+```
+
 ## Running the Application
+- To run the application without Docker, you can use:
 ```bash
 npm run start
 ```
