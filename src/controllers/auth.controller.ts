@@ -1,17 +1,23 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { UserRole } from '../entities/user.entity';
 
 export class AuthController {
   static async register(req: Request, res: Response): Promise<void> {
     try{
-      const { email, password } = req.body;
+      const { email, password, role } = req.body;
 
       if (!email || !password) {
         res.status(400).json({ message: 'Email and password are required' });
         return;
       }
 
-      const result = await AuthService.registerUser({email, password});
+      if (role && !Object.values(UserRole).includes(role)) {
+        res.status(400).json({ message: 'Invalid role. Allowed roles: admin, user' });
+        return;
+      }
+
+      const result = await AuthService.registerUser({email, password, role});
       res.status(200).json(result);
       return;
     }catch(error){

@@ -53,7 +53,12 @@ docker-compose down
 ```
 
 ## Running the Application
-- To run the application without Docker, you can use:
+- To run the application without Docker, you can:
+start postgres service
+```bash
+brew services start postgresql@15
+```
+
 ```bash
 npm run start
 ```
@@ -67,6 +72,13 @@ npm run start
 {
   "email": "test@greenhub.com",
   "password": "yourpassword"
+}
+or for admin
+```json
+{
+  "email": "greenhubEA@example.com",
+  "password": "password123!",
+  "role": "admin"
 }
 ```
 
@@ -115,7 +127,7 @@ Error (if credentials are invalid):
 ```
 
 3. Sending Logs
-- Endpoint: POST /send-logs
+- Endpoint: POST api/send-logs
 
 - Request Headers
 Authorization: Bearer jwt_token
@@ -141,7 +153,7 @@ success
 }
 ```
 
-4. Generating Reports
+4. Generating Reports(only admins can access this)
 - Endpoint: POST /api/report
 
 - Request Headers

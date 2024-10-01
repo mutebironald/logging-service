@@ -8,6 +8,7 @@ import { hashPassword, comparePasswords } from '../utils/hash.util';
 type RegistrationRequest = {
   email: string;
   password: string;
+  role?: UserRole;
 };
 
 type AuthenticationRequest = {
@@ -16,7 +17,7 @@ type AuthenticationRequest = {
 };
 
 export class AuthService {
-  static async registerUser({ email, password }: RegistrationRequest) {
+  static async registerUser({ email, password, role = UserRole.User }: RegistrationRequest) {
     const userRepository = AppDataSource.getRepository(User);
     const existingUser = await userRepository.findOne({ where: { email } });
 
@@ -25,7 +26,7 @@ export class AuthService {
     }
 
     const hashedPassword = await hashPassword(password);
-    const newUser = userRepository.create({ email, password: hashedPassword, role: UserRole.User });
+    const newUser = userRepository.create({ email, password: hashedPassword, role });
 
     await userRepository.save(newUser);
     return { message: 'User registered successfully' };
