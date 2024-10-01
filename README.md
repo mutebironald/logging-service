@@ -1,220 +1,162 @@
-**\# Candidate Assessment: Logging HTTP Web Service Development \#\# Objective** 
-
-Design and implement an HTTP web service for logging, integrating with a PostgreSQL database. The service should include user registration, authentication, log submission, and reporting capabilities. 
-
-**\#\# Requirements** 
-
-**\#\#\# Endpoints** 
-
-1\. **\*\*Registration\*\*** 
-
-\- **\*\*Purpose\*\***: Create a new user account in the database. 
-
-\- **\*\*Request\*\***: 
-
-\- Content type: \`application/json\` 
-
-\- Data type: 
-
-\<pre\> 
-
-type RegistrationRequest \= { 
-
-// The email of the user. 
-
-email: string; 
-
-// The password of the user. 
-
-password: string 
-
-} 
-
-\</pre\> 
-
-\- **\*\*Response\*\***: 
-
-\- Status: 200 on success 
-
-2\. **\*\*Authentication\*\*** 
-
-\- **\*\*Purpose\*\***: Verify user credentials and grant access if valid. \- **\*\*Implementation\*\***: Authentication mechanism of you choice (e.g. JWT, cookies). \- **\*\*Request\*\***: 
-
-\- Content type: \`application/json\` 
-
-\- Data type: 
-
-\<pre\> 
-
-type AuthenticationRequest \= { 
-
-// The email of the user. 
-
-email: string; 
-
-// The password of the user. 
-
-password: string 
-
-} 
-
-\</pre\> 
-
-\- **\*\*Response\*\***:  
-\- Status: 200 on success 
-
-3\. **\*\*Send Log\*\*** 
-
-\- **\*\*Purpose\*\***: Receive and store log messages (user, timestamp, level, text, has HTTP localhost URLs). 
-
-\- **\*\*Access\*\***: Authenticated users only. 
-
-\- **\*\*Request\*\***: 
-
-\- Maximum size: 5 megabytes 
-
-\- Content type: \`application/json\` 
-
-\- Data type: 
-
-\<pre\> 
-
-type LogLevel \= "info" | "warning" | "error"; 
-
-type LogMessage \= { 
-
-// The date and time of the log message. 
-
-timestamp: string; 
-
-// The level of the log message. 
-
-level: LogLevel; 
-
-// The text of the log message. 
-
-text: string 
-
-}; 
-
-type SendLogRequest \= Array\<LogMessage\>; 
-
-\</pre\> 
-
-\- Each request may contain one or more log messages 
-
-\- The service should identify log messages containing HTTP localhost URLs \- The average log message size is around 100 kilobytes 
-
-\- **\*\*Response\*\***: 
-
-\- Status: 200 on success 
-
-4\. **\*\*Reporting\*\***: 
-
-\- **\*\*Purpose\*\***: Generate a report on logs within a specified period. \- **\*\*Access\*\***: Authenticated admin users only. 
-
-\- **\*\*Request\*\***: 
-
-\- Content type: \`application/json\` 
-
-\- Data type: 
-
-\<pre\> 
-
-type ReportingRequest \= { 
-
-// The start date (including) of the period. 
-
-startDate?: string; 
-
-// The end date (including) of the period. 
-
-endDate?: string 
-
-} 
-
-\</pre\> 
-
-\- **\*\*Response\*\***: 
-
-\- Content type: \`application/json\` 
-
-\- Data type:  
-\<pre\> 
-
-type ReportingResponse \= { 
-
-// The start date of the period. 
-
-startDate?: string; 
-
-// The end date of the period. 
-
-endDate?: string; 
-
-// The count of 'warning' log messages in the period. 
-
-warningCount: number; 
-
-// The count of 'error' log messages in the period. 
-
-errorCount: number; 
-
-// The count of log messages with HTTP localhost URLs in the period. 
-
-messageWithUrlCount: number 
-
-} 
-
-\</pre\> 
-
-\- Status: 200 on success 
-
-**\#\#\# Additional Considerations:** 
-
-\- Encoding: \`UTF-8\` 
-
-\- Database: \`PostgreSQL\` 
-
-\- Date/Time format: As specified here 
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Date\# date\_time\_string\_format. 
-
-\- The platform/language is any of: 
-
-\- \`Node.js/TypeScript\` 
-
-\- \`NET/C\#\` 
-
-\- \`Rust\` 
-
-**\#\#\# Optionals (if you feel challenged not enough):** 
-
-\- Create a Docker compose/Podman Quadlet file(s) for the web service and the database \- Create an implementation of the web service in different languages and compare them (upsides/downsides) 
-
-**\#\#\# Evaluation Criteria:** 
-
-\- Correctness and completeness of implementation 
-
-\- Code quality and organization 
-
-\- Efficiency and performance 
-
-\- Error handling and security 
-
-\- Adherence to best practices 
-
-\- Documentation and clarity  
-**\#\#\# Submission:** 
-
-Candidates should provide the following: 
-
-\- Source code 
-
-\- Instructions for setup and execution 
-
-\- Any relevant documentation or explanations 
-
-**\*\*Note\*\***: This assessment is designed to evaluate your development skills and problem-solving abilities. Feel free to make reasonable assumptions and demonstrate your proficiency in building robust and scalable web services. 
-
-**\*\*Good luck\!\*\***
+# Logging Service
+
+This project provides a logging service with user authentication, log storage, and reporting features. Users can register, log messages, and generate reports on log data.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Running the Application](#running-the-application)
+- [Testing the Endpoints](#testing-the-endpoints)
+  - [1. User Registration](#1-user-registration)
+  - [2. User Authentication](#2-user-authentication)
+  - [3. Sending Logs](#3-sending-logs)
+  - [4. Generating Reports](#4-generating-reports)
+
+
+## Prerequisites
+
+- Node.js (version 22.5.1 )
+- PostgreSQL database
+- A tool for sending HTTP requests (e.g., [Postman](https://www.postman.com/) or [cURL](https://curl.se/))
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/mutebironald/logging-service.git
+   cd logging-service
+   ```
+
+
+2. Install the dependencies:
+```bash
+npm install
+```
+
+## Environment Variables
+
+- update the .env with your Database configurations
+
+## Running the Application
+```bash
+npm run start
+```
+
+
+## Testing the Endpoints
+1. User Registration
+- Endpoint: POST /api/register
+- Request Body 
+```json
+{
+  "email": "test@greenhub.com",
+  "password": "yourpassword"
+}
+```
+
+- Response:
+success 
+```json
+{
+    "message": "User registered successfully"
+}
+```
+statusCode 200
+
+Error (if user already exists):
+```json
+{
+    "message": "User already exists"
+}
+```
+
+statusCode 400
+
+2. User Authentication
+- Endpoint: POST /api/login
+- Request Body: 
+```json
+{
+  "email": "test@greenhub.com",
+  "password": "yourpassword"
+}
+```
+
+- Response:
+success 
+```json
+{
+    "message": "User authenticated successfully",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb25hbGRAZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjc3NjgwNDcsImV4cCI6MTcyNzc3MTY0N30.K3H2JP29JECdU2CERhWkqkNCEDGpICH8Y4s7IpPS1lI"
+}
+```
+
+Error (if credentials are invalid):
+```json
+{
+    "message": "Invalid email or password"
+}
+```
+
+3. Sending Logs
+- Endpoint: POST /send-logs
+
+- Request Headers
+Authorization: Bearer jwt_token
+Content-Type: application/json
+
+- Request Body:
+
+```json
+[
+  {
+    "timestamp": "2023-09-20T14:00:00.000Z",
+    "level": "error",
+    "text": " http://localhost:3000/api/send-logs"
+  }
+]
+```
+
+- Response:
+success
+```json
+{
+    "message": "Logs saved successfully"
+}
+```
+
+4. Generating Reports
+- Endpoint: POST /api/report
+
+- Request Headers
+Authorization: Bearer jwt_token
+Content-Type: application/json
+
+- Request Body:
+```json
+{
+  "startDate": "2023-09-20T00:00:00.000Z",
+  "endDate": "2023-11-20T23:59:59.999Z"
+}
+```
+
+- Response:
+success
+```json
+{
+    "startDate": "2023-09-20T00:00:00.000Z",
+    "endDate": "2023-11-20T23:59:59.999Z",
+    "warningCount": 0,
+    "errorCount": 1,
+    "messageWithUrlCount": 1
+}
+```
+
+Error (if endDate is not greater than startDate)
+```json
+{
+    "message": "endDate must be greater than startDate"
+}
+```
