@@ -73,6 +73,7 @@ npm run start
   "email": "test@greenhub.com",
   "password": "yourpassword"
 }
+```
 or for admin
 ```json
 {
